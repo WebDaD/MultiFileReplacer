@@ -13,12 +13,21 @@ namespace MultiFileReplacer
         [STAThread]
         static void Main(string[]args)
         {
-            if (args != null && args.Length == 1)
+            if (args != null && args.Length == 1 || args.Length == 2)
             {
                 if (args[0] == "-a")
                 {
                     Console.WriteLine("Starting auto replace");
-                    Config c = new Config(Application.StartupPath + "\\" + "config.ini");
+                    string configFile = "";
+                    if (args[1].StartsWith("--config"))
+                    {
+                        configFile = args[1].Split('=')[1].Trim();
+                    }
+                    else
+                    {
+                        configFile = Application.StartupPath + "\\" + "config.ini";
+                    }
+                    Config c = new Config(configFile);
                     foreach (KeyValuePair<string,bool> file in c.Files)
                     {
                         Worker.searchReplace(file.Key, c.Search, c.UseMachine ? Environment.MachineName : c.Replace, file.Value);
